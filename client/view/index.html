@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="js/index.js"></script>
+</head>
+
+<body onload="getUser()">
+    <img src="/img/logo.png" />
+    <p id="user">hello unknown person</p>
+
+    <!-- a form containing two input fields and a submit button -->
+    <form action="calc" method="post" onsubmit="return validate();">
+        <input type="text" name="data1" id="data1">
+        <input type="text" name="data2" id="data2">
+        <!-- click this button to submit this form and navigate to a new page -->
+        <input type="submit">
+    </form>
+
+    <a href="login">login</a>
+    
+    <!-- click this button to send data from the form fields
+         to the server without navigating to a new page -->
+    <button onclick="compare()">Compare</button>
+
+    <!-- an input field outside of a form -->
+    <input id="file" type="file"/>
+    <!-- click this button to upload the file selected in the input above to the server -->
+    <button onclick="upload()">Upload</button>
+    <!-- click this button to get a list of data from server -->
+    <button onclick="download()">Download</button>
+    <!-- click this button to insert a data to the list from server -->
+    <button onclick="insert()">Insert</button>
+
+    <!-- show the list of items from server -->
+    <div id="list">
+    </div>
+</body>
+
+</html>
