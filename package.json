@@ -1,18 +1,56 @@
 {
-  "name": "base-node-server",
-  "version": "0.0.0",
-  "description": "A example to serve up a static page with express.",
-  "main": "server.js",
-  "repository": "",
-  "author": "Rick Kozak",
+  "name": "factis-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "nodemon": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Madhurendra Singh(madhurendra@mobilyte.com)",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-latest": "^6.24.1",
+    "nodemon": "^1.17.5"
+  },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "",
-    "cookie-session": "^2.0.0-beta.3",
-    "eslint": "",
-    "express": "",
-    "express-fileupload": "^0.4.0",
-    "fs-extra": "^6.0.1",
-    "mongoist": "^1.7.4"
+    "bcrypt": "^2.0.1",
+    "body-parser": "^1.18.3",
+    "bunyan": "^1.8.12",
+    "bunyan-express-serializer": "^1.0.0",
+    "busboy-body-parser": "^0.3.2",
+    "config": "^1.30.0",
+    "connect-busboy": "0.0.2",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.4",
+    "express-fileupload": "^1.0.0-alpha.1",
+    "express-request-id": "^1.4.0",
+    "express-session": "^1.15.6",
+    "formidable": "^1.2.1",
+    "handlebars": "^4.0.11",
+    "helmet": "^3.12.1",
+    "joi": "^13.4.0",
+    "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.10",
+    "mongoose": "^5.1.7",
+    "nodemailer": "^4.6.7",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "path": "^0.12.7",
+    "speakeasy": "^2.0.0",
+    "swagger-express-middleware": "^1.0.0-alpha.12",
+    "underscore": "^1.9.1"
+  },
+  "babel": {
+    "presets": [
+      "latest"
+    ]
   }
 }

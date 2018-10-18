@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+     <title>E-commerce</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="favicon.png">
+
+  </head>
+  <body>
+    <!-- navbar-->
+    <header class="header mb-5">
+      <nav class="navbar navbar-expand-lg">
+        <div class="container"><a href="index.html" class="navbar-brand home">
+
+		 E-Commerce<span class="sr-only">E-Commerce</span> </a>
+           <div id="navigation" class="collapse navbar-collapse"> 
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div id="all">
+      <div id="content">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+            </div>
+            <div class="col-lg-6">
+              <div class="box">
+                <h1>New account</h1>
+                <p class="lead">Not our registered customer yet?</p>
+				<hr>
+                  <div class="form-group">
+                    <label for="username">User Name</label>
+                    <input id="username" type="text" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input id="email" type="text" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    <input id="password" type="password" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="shippingaddress">Shipping Address</label>
+                    <input id="shippingaddress" type="text" class="form-control">
+                  </div>
+                  <div class="text-center">
+                    <button type="button" class="btn btn-primary" onclick="SaveUser()" ><i class="fa fa-user-md"></i> Register</button>
+                  </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="box">
+                <h1>Login</h1>
+                <p class="lead">Already our customer?</p>
+                <hr>
+                  <div class="form-group">
+                    <label for="lemail">Email</label>
+                    <input id="lemail" type="text" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="lpassword">Password</label>
+                    <input id="lpassword" type="password" class="form-control">
+                  </div>
+                  <div class="text-center">
+                    <button type="button" class="btn btn-primary"onclick="Login()"><i class="fa fa-sign-in"></i> Log in</button>
+					<br/>
+					<a href="../E-Commerce-FE/forgotpassword.html"> Forgot Password </a>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="copyright">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 mb-2 mb-lg-0">
+            <p class="text-center text-lg-left">©2018 .</p>
+          </div
+        </div>
+      </div>
+    </div>
+    <!-- *** COPYRIGHT END ***-->
+    <!-- JavaScript files-->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/alert.js"></script>
+	<script>
+		function SaveUser(){
+			var username = $('#username').val();
+			var userpassword  = $('#password').val();
+			var email = $('#email').val();
+			var shipAddress = $('#shippingaddress').val();
+			$.ajax({
+				url:'http://localhost:4000/api/users/register',
+				dataType :'json',
+				type:'POST',
+				contentType :'application/json',
+				data: JSON.stringify({
+					userName: username,
+					password: userpassword,
+					email:email,
+					shippingAddress:shipAddress
+				}),
+				success: function(e){
+          $.alert('User registered successfully', { 
+              closeTime: 3000,
+              autoClose: true,
+              position: ["top-right"], 
+              type: 'success' 
+          }); 
+					localStorage.setItem("username", e.userName);
+					localStorage.setItem("userid", e._id);
+          setTimeout(function(){ window.location.href="index.html"; }, 3000);  
+				}
+			});
+		}
+		function Login(){
+			var username = $('#lemail').val();
+			var userpassword  = $('#lpassword').val();
+			$.ajax({
+				url:'http://localhost:4000/api/users/Login',
+				dataType :'json',
+				type:'POST',
+				contentType :'application/json',
+				data: JSON.stringify({
+					email: username,
+					password: userpassword
+				}),
+				success: function(e){
+					localStorage.setItem("username", e.user.userName);
+					localStorage.setItem("userid", e.user._id);
+					location.href= '../index.html';
+				}
+			});
+		}
+
+		function forgotPassword(){
+			var email = $('#lemail').val();
+			$.ajax({
+				url:'http://localhost:4000/api/admin/forgotPassword',
+				dataType :'json',
+				type:'POST',
+				contentType :'application/json',
+				data: {
+					email: email
+				},
+				success: function(e){
+					console.log(e.data);
+				}
+			});
+		}
+
+	</script>
+  </body>
+</html>

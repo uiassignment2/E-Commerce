@@ -1,0 +1,380 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Product Detail</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style> 
+        .star-rating {
+            line-height:32px;
+            font-size:1.25em;
+        }
+        i {
+            cursor :  pointer;
+        }
+        </style>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script> 
+</head>
+<body>
+    <header class="header mb-5">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a href="index.html" class="nav-item navbar-brand home">
+                    E-Commerce<span class="sr-only">E-Commerce</span>
+                </a>
+                <div id="navigation" class="collapse navbar-collapse">
+                    <ul class="navbar-nav mr-auto"> 
+                    </ul>
+                    <div class="navbar-buttons d-flex justify-content-end">
+                        <div id="cartoverview" style="display:none !important" class="navbar-collapse collapse d-none d-lg-block">
+                            <a href="viewCart.html" class="btn btn-primary navbar-btn">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span id="sCartCount">0 items in cart</span>
+                            </a>
+                            <div class="dropdown">
+                                <a href="javascript:void(0)" id="btnUserView" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> 
+                                    <i class="fa fa-user"></i>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="viewProfile.html">View Profile</a> 
+                                    <a class="dropdown-item" href="javascript:void(0)" onclick="logout()">Log Out</a>     
+                                </div>
+                            </div>
+                          <!--a href="javascript:void(0)" onclick="logout()" >Logout</a>-->
+                      </div>
+                      <div id="loginDiv" style="display:none !important" class="navbar-collapse collapse d-none d-lg-block">
+                          <a href="registration.html" class="btn btn-primary navbar-btn">
+                              <span>Sign In / Sign Up</span>
+                          </a>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="all">
+        <div id="content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="row products" id="productMain">
+                            <div class="col-md-6">
+                                <div class="owl-carousel shop-detail-carousel">
+                                    <div class="item"> <img src="" id="productImg" alt="" class="img-fluid"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="box">
+                                    <!-- <h1 class="text-center">White Blouse Armani</h1> -->
+                                    <h1 class="text-center" id="productDescription"> </h1>
+                                    <p class="price" id="productPrice"> </p>
+                                    <div class="row" style="margin: 0 0 20px 0">
+                                        <div class="col-md-3 col-sm-3"></div>
+                                        <div class="col-md-3 col-sm-3">Qunatity : </div>
+                                        <div class="col-md-3 col-sm-3">
+                                            <select id="ddlProductQunatity" class="form-control">
+                                                <option value="1" selected>1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <p class="text-center buttons">
+                                      <a href="javascript:void(0)" id="aAddToCart" class="btn btn-primary"><i class="fa fa-shopping-cart"></i> Add To Cart</a>
+                                      <a href="javascript:void(0)" id="aBuyNow" class="btn btn-primary"><i class="fa fa-shopping-cart"></i> Buy Now</a>
+                                  </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="blog-post" class="col-lg-12 col-md-12">
+                        <div class="box">
+                          <h1>User Feedbacks</h1>
+                          <div id="comment-form">
+                            <h4>Leave comment</h4> 
+                            <div class="row">
+                                <div class=col-md-12> 
+                                    <label> Rating : </label>
+                                    <div class="star-rating">
+                                        <span class="fa fa-star-o" data-rating="1"></span>
+                                        <span class="fa fa-star-o" data-rating="2"></span>
+                                        <span class="fa fa-star-o" data-rating="3"></span>
+                                        <span class="fa fa-star-o" data-rating="4"></span>
+                                        <span class="fa fa-star-o" data-rating="5"></span>
+                                        <input type="hidden" name="whatever1" class="rating-value" value="0">
+                                    </div>
+                                </div>  
+                                <div class="col-md-12">
+                                  <div class="form-group">
+                                    <label for="comment">Comment <span class="required">*</span></label>
+                                    <textarea id="txtcomment" rows="4" class="form-control"></textarea>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-12 text-right">
+                                  <a href="javascript:void(0)" onclick="AddComment()" class="btn btn-primary">
+                                      <i class="fa fa-comment-o"></i> Post comment</a>
+                                </div>
+                              </div> 
+                          </div>  
+                          <div id="comments">
+                          </div>
+                         </div>
+                        <!-- /.box-->
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-2 mb-lg-0">
+                    <p class="text-center text-lg-left">©2018 .</p>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <script>
+        var productId='';
+        var Rating=0;
+
+        $(function () {
+            getUrlVars();
+            showProductDetail();
+            getCartCount();
+            SetRatingStar();
+            checkUserName();
+            getComment();
+        });
+
+        function logout(){
+            localStorage.clear();
+            window.location.href="index.html";
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            productId = vars.id;
+        }
+
+        function checkUserName() {
+            if (localStorage.getItem('userid') != 'undefined') {
+                $.ajax({
+                    url: 'http://localhost:4000/api/users/getUserInfo?userId=' + localStorage.getItem('userid'),
+                    dataType: 'json',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (e) {
+                        if (e.code == 200) { 
+                            $('#loginDiv').hide();
+                            $('#cartoverview').show();
+                            getCartCount(); 
+                        }
+                        else {
+                            $('#loginDiv').show();
+                            $('#cartoverview').hide();
+                            window.location.href="index.html";
+                        }
+                    }
+                });
+            }
+            else {
+                $('#loginDiv').show();
+                $('#cartoverview').hide();
+                window.location.href="index.html";
+            }
+        }
+
+        function showProductDetail() { 
+            $.ajax({
+                url: 'http://localhost:4000/api/users/getProductDetail?id=' + productId,
+                dataType: 'json',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (e) {
+                    if (e.code == 200) {
+                        $('#productImg').attr('src', e.obj.data.image);
+                        $('#productPrice').html('$' + e.obj.data.pricing);
+                        $('#productDescription').html(e.obj.data.description);
+                        $('#aAddToCart').attr('onclick',"AddToCart('"+ e.obj.data._id +"')");
+                        $('#aBuyNow').attr('onclick',"BuyNow()");
+                    }
+                }
+            });
+        }
+        
+        function BuyNow(){
+            $.when(AddToCart(productId)).done(function(){
+                window.location.href="viewCart.html";
+            });
+        }
+
+        function AddToCart(e) {
+            if (localStorage.getItem('userid') != 'undefined' && e != undefined && e != '') {
+                $.ajax({
+                    url: 'http://localhost:4000/api/users/addCartData',
+                    dataType: 'json',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        quantity: $('#ddlProductQunatity').val(),
+                        userId: localStorage.getItem('userid'),
+                        productId: e
+                    }),
+                    success: function (e) {
+                        if (e.code == 200) {
+                            getCartCount();
+                            $.alert('Item added into cart successfully', { 
+                                closeTime: 3000,
+                                autoClose: true,
+                                position: ["top-right"], 
+                                type: 'success' 
+                            }); 
+                        }
+                        else { 
+                            $.alert('Unable to perform action, please try again', { 
+                                closeTime: 3000,
+                                autoClose: true,
+                                position: ["top-right"], 
+                                type: 'warning' 
+                            });  
+                        }
+                    }
+                });
+            }
+            else {
+                localStorage.setItem('productId', e);
+                location.href = '../E-Commerce-FE/registration.html';
+            }
+        }
+
+        function getCartCount() {
+            $.ajax({
+                url: 'http://localhost:4000/api/users/getCartData?userId=' + localStorage.getItem('userid'),
+                dataType: 'json',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (e) {
+                    if (e.code == 200) {
+                        $('#sCartCount').html(e.data.length+' items in cart');
+                    }
+                    else {
+                        $('#loginDiv').show();
+                        $('#cartoverview').hide();
+                    }
+                }
+            });
+        }
+
+        function getComment(){
+            $.ajax({
+                url: 'http://localhost:4000/api/users/getAllComments?productId=' + productId,
+                dataType: 'json',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (e) {
+                    if (e.code == 200) {
+                        var comments=''; 
+                        var rating = 3;
+                        $(e.data).each(function(){
+                            comments+= '<div class="row comment">\
+                                            <div class="col-md-1 col-lg-1 text-center text-md-center">\
+                                                <p><img src="images/User.png" alt="" class="commentUser img-fluid rounded-circle"></p>\
+                                            </div>\
+                                            <div class="col-md-11 col-lg-11">\
+                                                <h5>'+ this.userName +'</h5>';
+
+                            comments+='<span>';
+                            rating= this.rating;
+                            for(var i=0; i<rating;i++)
+                            {
+                                comments+= '<i class="fa fa-star" aria-hidden="true"></i>'; 
+                            }
+                            for(var i=rating; i<5;i++)
+                            {
+                                comments+='<i class="fa fa-star-o" aria-hidden="true"></i>';
+                            } 
+                            comments+='</span>\
+                                        <p>'+this.text+'.</p>\
+                                    </div></div>'; 
+                        });
+                        $('#comments').html(comments);
+                    }
+                }
+            }); 
+        }
+
+        function AddComment(){  
+            $.ajax({
+                url: 'http://localhost:4000/api/users/upload',
+                dataType: 'json',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ 
+                    rating: rating,
+                    text: $('#txtcomment').val(),
+                    userId: localStorage.getItem('userid'),
+                    productId: productId
+                }),
+                success: function (e) {
+                    if (e.code == 200) {
+                        getComment();
+                            $.alert('Comment added successfully', { 
+                                closeTime: 3000,
+                                autoClose: true,
+                                position: ["top-right"], 
+                                type: 'success' 
+                            }); 
+                    }
+                    else {  
+                        $.alert('Unable to perform action, please try again', { 
+                            closeTime: 3000,
+                            autoClose: true,
+                            position: ["top-right"], 
+                            type: 'warning' 
+                        }); 
+                    }
+                }
+            }); 
+        }
+
+        var $star_rating = $('.star-rating .fa');
+
+        function SetRatingStar() { 
+            rating=0;
+            return $star_rating.each(function() { 
+                if (parseInt($star_rating.siblings('input.rating-value').val()) >= parseInt($(this).data('rating'))) { 
+                    rating += 1 ;
+                    return $(this).removeClass('fa-star-o').addClass('fa-star');
+                } else {
+                    return $(this).removeClass('fa-star').addClass('fa-star-o');
+                }
+            });
+        };
+
+        $star_rating.on('click', function() {
+            $star_rating.siblings('input.rating-value').val($(this).data('rating'));
+            return SetRatingStar();
+        });
+        
+    </script>
+</body>
+</html>

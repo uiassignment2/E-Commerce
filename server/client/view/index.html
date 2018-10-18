@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>E-commerce</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+    <header class="header mb-5">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a href="index.html" class="navbar-brand home">
+                    E-Commerce<span class="sr-only">E-Commerce</span>
+                </a> 
+                <div id="navigation" class="collapse navbar-collapse">
+                    <ul class="navbar-nav mr-auto"> 
+                    </ul>
+                    <div class="navbar-buttons d-flex justify-content-end">
+                        <div id="cartoverview" style="display:none !important" class="navbar-collapse collapse d-none d-lg-block">
+                            <a href="viewCart.html" class="btn btn-primary navbar-btn">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span id="sCartCount">0 items in cart</span>
+                            </a>
+                            <div class="dropdown">
+                                <a href="javascript:void(0)" id="btnUserView" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> 
+                                    <i class="fa fa-user"></i>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="viewProfile.html">View Profile</a> 
+                                    <a class="dropdown-item" href="javascript:void(0)" onclick="logout()">Log Out</a>     
+                                </div>
+                            </div>
+                          <!--a href="javascript:void(0)" onclick="logout()" >Logout</a>-->
+                      </div>
+                      <div id="loginDiv" style="display:none !important" class="navbar-collapse collapse d-none d-lg-block">
+                          <a href="registration.html" class="btn btn-primary navbar-btn">
+                              <span>Sign In / Sign Up</span>
+                          </a>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="all">
+        <div id="content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="row products" id="productDiv">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="copyright">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 mb-2 mb-lg-0">
+                        <p class="text-center text-lg-left">©2018 .</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/alert.js"></script>
+        <script>
+
+            $(function () {
+                checkUserName();
+                showProducts();
+            });
+
+            function logout(){
+                localStorage.clear();
+                location.reload();
+            }
+
+            function checkUserName() {
+                if (localStorage.getItem('userid') != 'undefined') {
+                    $.ajax({
+                        url: 'http://localhost:4000/api/users/getUserInfo?userId=' + localStorage.getItem('userid'),
+                        dataType: 'json',
+                        type: 'GET',
+                        contentType: 'application/json',
+                        success: function (e) {
+                            if (e.code == 200) {
+                                $('#loginDiv').hide();
+                                $('#cartoverview').show();
+                                getCartCount();
+                            }
+                            else {
+                                $('#loginDiv').show();
+                                $('#cartoverview').hide();
+                            }
+                        }
+                    });
+                }
+                else {
+                    $('#loginDiv').show();
+                    $('#cartoverview').hide();
+                }
+            }
+
+            function getCartCount() {
+                $.ajax({
+                    url: 'http://localhost:4000/api/users/getCartData?userId=' + localStorage.getItem('userid'),
+                    dataType: 'json',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (e) {
+                        if (e.code == 200) {
+                            $('#sCartCount').html(e.data.length+' items in cart');
+                        }
+                        else {
+                            $('#loginDiv').show();
+                            $('#cartoverview').hide();
+                        }
+                    }
+                });
+            }
+
+            function showProducts() {
+                $.ajax({
+                    url: 'http://localhost:4000/api/users/getProducts',
+                    dataType: 'json',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (e) {
+                        if (e.code == 200) {
+                            var productDiv = '';
+                            $(e.data).each(function () {
+                                productDiv += '<div class="col-lg-3 col-md-4">\
+												  <div class="product">\
+													<a href="productDetail.html?id='+ this._id + '">\
+														<img src="'+ this.image + '" alt="" class="img-fluid">\
+													</a>\
+													<div class="text">\
+													  <h3>'+this.description+'</h3>\
+													  <p class="price">\
+														<del></del>$ '+ (this.pricing || 0) + '\
+													  </p>\
+													  <p class="buttons"><a href="productDetail.html?id='+ this._id + '" class="btn btn-outline-secondary">View detail</a>' +
+                                                         ((localStorage.getItem('userid')) ?
+                                                          "<a href='javascript:void(0)' class='btn btn-primary' onclick='AddToCart(" + JSON.stringify(this._id) + ")' ><i class='fa fa-shopping-cart'></i>Add to cart</a></p>"
+                                                          : '') +
+                                                        '</div>\
+												  </div>\
+											  </div>';
+                            });
+                            $('#productDiv').html(productDiv);
+                        }
+                    }
+                });
+            }
+
+            function AddToCart(e) {
+                if (localStorage.getItem('userid') != 'undefined' && e != undefined && e != '') {
+                    $.ajax({
+                        url: 'http://localhost:4000/api/users/addCartData',
+                        dataType: 'json',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            quantity: 1,
+                            userId: localStorage.getItem('userid'),
+                            productId: e
+                        }),
+                        success: function (e) { 
+                            if (e.code == 200) {
+                                $.alert('Item added to cart', { 
+                                    closeTime: 3000,
+                                    autoClose: true,
+                                    position: ["top-right"], 
+                                    type: 'success' 
+                                });
+                                getCartCount();
+                            }
+                            else {
+                                if(e.code==400){
+                                    alert(e.message);
+                                } 
+                            }
+                        }
+                    });
+                }
+                else {
+                    localStorage.setItem('productId', e);
+                    location.href = '../E-Commerce-FE/registration.html';
+                }
+            }
+
+        </script>
+</body>
+</html>

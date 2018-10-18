@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>View Profile</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+     <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script> 
+</head>
+<body>
+    <header class="header mb-3">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a href="index.html" class="navbar-brand home">
+                    E-Commerce<span class="sr-only">E-Commerce</span>
+                </a>
+                <div id="navigation" class="collapse navbar-collapse">
+                    <ul class="navbar-nav mr-auto"> 
+                    </ul>
+                    <div class="navbar-buttons d-flex justify-content-end"> 
+                        <div id="cartoverview" style="display:none !important" class="navbar-collapse collapse d-none d-lg-block">
+                            <div class="dropdown">
+                                <a href="javascript:void(0)" id="btnUserView" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> 
+                                    <i class="fa fa-user"></i>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="viewProfile.html">View Profile</a> 
+                                    <a class="dropdown-item" href="javascript:void(0)" onclick="logout()">Log Out</a>     
+                                </div>
+                            </div> 
+                      </div> 
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="all">
+        <div id="content">
+                <div class="container">
+                  <div class="row"> 
+                    <div id="checkout" class="col-lg-9">
+                      <div class="box">
+                        <form method="get" action="checkout4.html">
+                          <h1>Checkout - Order review</h1>
+                          
+                          <div class="content">
+                            <div class="table-responsive">
+                              <table class="table" id="tblCart">
+                                <thead>
+                                  <tr>
+                                    <th colspan="2">Product</th>
+                                    <th>Quantity</th>
+                                    <th>Unit price</th>
+                                    <th>Remove</th>
+                                    <th>Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="tbodyCart">
+                                </tbody>
+                                <tfoot>
+                                  <tr>
+                                    <th colspan="5">Total</th>
+                                    <th>$<span id="totalProductCost"> </span></th>
+                                  </tr>
+                                </tfoot>
+                              </table>
+                            </div>
+                            <!-- /.table-responsive-->
+                          </div>
+                          <!-- /.content-->
+                          <div class="box-footer d-flex justify-content-between">
+                            <a href="javascript:void(0)" onclick="buyNow()" class="btn btn-primary">Place an order<i class="fa fa-chevron-right"></i></a>
+                          </div>
+                        </form>
+                      </div>
+                      <!-- /.box-->
+                    </div>
+                    <!-- /.col-lg-9-->
+                    <div class="col-lg-3">
+                      <div id="order-summary" class="card">
+                        <div class="card-header">
+                          <h3 class="mt-4 mb-4">Order summary</h3>
+                        </div>
+                        <div class="card-body">
+                          <p class="text-muted">Shipping and additional costs are calculated based on the values you have entered.</p>
+                          <div class="table-responsive">
+                            <table class="table">
+                              <tbody>
+                                <tr>
+                                  <td>Order subtotal</td>
+                                  <th>$<span id="spOrderSubTotal">  </span></th>
+                                </tr>
+                                <tr>
+                                  <td>Shipping and handling</td>
+                                  <th>$<span id="spShippingCost">  </span></th>
+                                </tr> 
+                                <tr class="total">
+                                  <td>Total</td>
+                                  <th>$<span id="spTotalAmount">  </span></th>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- /.col-lg-3-->
+                  </div>
+                </div>
+        </div>
+    </div>
+    <div id="copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-2 mb-lg-0">
+                    <p class="text-center text-lg-left">©2018 .</p>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <script>
+        var productId='';
+        var Rating=0;
+        var cartId=[];
+
+        $(function () {
+            checkUserName(); 
+            getCartDetail(); 
+        });
+
+        function logout(){
+            localStorage.clear();
+            window.location.href="index.html";
+        }
+ 
+        function checkUserName() {
+            if (localStorage.getItem('userid') != 'undefined') {
+                $.ajax({
+                    url: 'http://localhost:4000/api/users/getUserInfo?userId=' + localStorage.getItem('userid'),
+                    dataType: 'json',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (e) {
+                        if (e.code == 200) {
+                            $('#cartoverview').show(); 
+                        }
+                        else {
+                            window.location.href="index.html"; 
+                        }
+                    }
+                });
+            }
+            else {
+                $('#loginDiv').show();
+                $('#cartoverview').hide();
+            }
+        } 
+ 
+        function getCartDetail() {
+            if (localStorage.getItem('userid') != 'undefined') {
+                $.ajax({
+                    url: 'http://localhost:4000/api/users/getCartData?userId=' + localStorage.getItem('userid'),
+                    dataType: 'json',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (e) {
+                        if (e.code == 200) {
+                            $('#loginDiv').hide();
+                            var cart='';
+                            var totalProductCost=0;
+                            var oldProductid='';
+                            var newProductid='';
+                            var ShippingCost=0;
+                            cartId=[];
+                            $(e.data).each(function(){
+                                newProductid=this.productId;
+                                cartId.push(this._id);
+                                cart+='<tr>\
+                                            <td colspan="2"><a href="productDetail.html?id='+this.productId+'"><img src="'+this.prodImage+'"></a>\
+                                                <a href="productDetail.html?id='+this.productId+'">'+this.prodDesc+'</a></td>\
+                                            <td>\
+                                                <select onchange="editCartDetail(\''+this._id+'\',this)" class="form-control">\
+                                                    <option value="1" '+(this.quantity==1?'selected':'')+'>1</option>\
+                                                    <option value="2" '+(this.quantity==2?'selected':'')+'>2</option>\
+                                                    <option value="3" '+(this.quantity==3?'selected':'')+'>3</option>\
+                                                    <option value="4" '+(this.quantity==4?'selected':'')+'>4</option>\
+                                                    <option value="5" '+(this.quantity==5?'selected':'')+'>5</option>\
+                                                </select>\
+                                            </td>\
+                                            <td>$'+this.prodPrice+'</td>\
+                                            <td><a href="javascript:void(0)" onclick="removeProductCart(\''+this._id+'\')" style="color: #000;font-size: 18px;"><i class="fa fa-trash-o"></i></a></td>\
+                                            <td>$'+(this.prodPrice*this.quantity)+'</br> + Shipping Cost : '+(this.prodShipCost||0)+' </td>\
+                                        </tr> ';
+                                if(newProductid!=oldProductid){
+                                    oldProductid=newProductid;
+                                    ShippingCost+=(this.prodShipCost|0);
+                                }
+                                totalProductCost += (this.prodPrice*this.quantity);
+                            });
+                            $('#tbodyCart').html(cart);
+                            $('#totalProductCost').html(totalProductCost);
+                            $('#spOrderSubTotal').html(totalProductCost);
+                            $('#spShippingCost').html(ShippingCost);
+                            $('#spTotalAmount').html(totalProductCost+ShippingCost);
+                        }
+                        else {
+                            window.location.href="index.html";
+                            $('#loginDiv').show(); 
+                        }
+                    }
+                });
+            }
+            else {
+                $('#loginDiv').show();
+                $('#cartoverview').hide();
+            }
+        } 
+        
+        function editCartDetail(id,e){
+            $.ajax({
+                url: 'http://localhost:4000/api/users/editCartQuantity?cartId=' + id,
+                dataType: 'json',
+                type: 'PUT',
+                data: JSON.stringify({
+                    quantity: $(e).val()
+                }),
+                contentType: 'application/json',
+                success: function (e) {
+                    if(e.code==200)
+                    {
+                        $.alert('Item quantity updated successfully', { 
+                            closeTime: 3000,
+                            autoClose: true,
+                            position: ["top-right"], 
+                            type: 'success' 
+                        });   
+                        getCartDetail();
+                    }
+                }
+            });
+        }
+
+        function removeProductCart(e){ 
+            $.ajax({
+                    url: 'http://localhost:4000/api/users/removeCart',
+                    dataType: 'json',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        cartId:e,
+                    }),
+                    contentType: 'application/json',
+                    success: function (e) {
+                        if(e.code==200)
+                        {
+                            $.alert('Item removed from cart, successfully', { 
+                                closeTime: 3000,
+                                autoClose: true,
+                                position: ["top-right"], 
+                                type: 'success' 
+                            });   
+                            getCartDetail();
+                        }
+                    }
+            });
+        }
+        
+        function buyNow(){ 
+            $.ajax({
+                    url: 'http://localhost:4000/api/users/saveOrder',
+                    dataType: 'json',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        cartId: cartId,
+                    }),
+                    contentType: 'application/json',
+                    success: function (e) {
+                        if(e.code==200)
+                        {
+                            $.alert('Item purchased successfully', { 
+                                closeTime: 3000,
+                                autoClose: true,
+                                position: ["top-right"], 
+                                type: 'success' 
+                            });  
+                            setTimeout(function(){ window.location.href="index.html"; }, 3000);  
+                        }
+                    }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>View Profile</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+     <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script> 
+</head>
+<body>
+    <header class="header mb-5">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a href="index.html" class="navbar-brand home">
+                    E-Commerce<span class="sr-only">E-Commerce</span>
+                </a>
+                <div id="navigation" class="collapse navbar-collapse">
+                    <ul class="navbar-nav mr-auto"> 
+                    </ul>
+                    <div class="navbar-buttons d-flex justify-content-end">
+                        <div id="cartoverview" style="display:none !important" class="navbar-collapse collapse d-none d-lg-block">
+                            <a href="viewCart.html" class="btn btn-primary navbar-btn">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span id="sCartCount">0 items in cart</span>
+                            </a>
+                            <div class="dropdown">
+                                <a href="javascript:void(0)" id="btnUserView" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> 
+                                    <i class="fa fa-user"></i>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="viewProfile.html">View Profile</a> 
+                                    <a class="dropdown-item" href="javascript:void(0)" onclick="logout()">Log Out</a>     
+                                </div>
+                            </div>
+                          <!--a href="javascript:void(0)" onclick="logout()" >Logout</a>-->
+                      </div>
+                      <div id="loginDiv" style="display:none !important" class="navbar-collapse collapse d-none d-lg-block">
+                          <a href="registration.html" class="btn btn-primary navbar-btn">
+                              <span>Sign In / Sign Up</span>
+                          </a>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="all">
+        <div id="content">
+            <div class="container"> 
+                <div class="row">
+                    <div id="blog-post" class="col-lg-12 col-md-12">
+                        <div class="box">
+                            <h1>View Profile 
+                               <a href="editProfile.html" title="Edit Profile" style="font-size:25px">
+                                    <i class="fa fa-pencil"> 
+                                    </i>
+                                </a> 
+                            </h1>
+                          <div id="comment-form"> 
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>User name : </label>
+                                            </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                                <label id="lblUserName"></label>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Email :</label> 
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label id="lblEmail"></label>
+                                        </div>
+                                    </div>
+                                </div> 
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Shipping Address : </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                            <label id="lblShippingAddress"></label>
+                                    </div>
+                                </div>
+                            </div> 
+                          </div> 
+                         </div>
+                         <div class="box">
+                             <h1>Order History</h1>
+                           
+                          <div class="content">
+                            <div class="table-responsive">
+                              <table class="table" id="tblCart">
+                                <thead>
+                                  <tr>
+                                    <th colspan="2">Product</th>
+                                    <th>Quantity</th>
+                                    <th>Unit price</th>
+                                    <th>Purchase Date</th>
+                                    <th>Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="tbodyCart">
+                                </tbody>
+                              </table>
+                            </div>
+                            <!-- /.table-responsive-->
+                          </div>
+                          </div> 
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-2 mb-lg-0">
+                    <p class="text-center text-lg-left">©2018 .</p>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <script>
+        var productId='';
+        var string ='';
+        var Rating=0;
+
+        $(function () {
+            checkUserName();
+            getCartCount();  
+        });
+
+        function logout(){
+            localStorage.clear();
+            window.location.href="index.html";
+        }
+ 
+        function checkUserName() {
+            if (localStorage.getItem('userid') != 'undefined') {
+                $.ajax({
+                    url: 'http://localhost:4000/api/users/getUserInfo?userId=' + localStorage.getItem('userid'),
+                    dataType: 'json',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (e) {
+                        if (e.code == 200) {
+                            $('#loginDiv').hide();
+                            $('#cartoverview').show(); 
+                            $('#lblUserName').html(e.data.userName);
+                            $('#lblEmail').html(e.data.email);
+                            $('#lblShippingAddress').html(e.data.shippingAddress);
+                            getOrderHistory();
+                         }
+                        else {
+                            window.location.href="index.html";
+                        }
+                    }
+                });
+            }
+            else {
+                window.location.href="index.html";
+            }
+        }
+
+        function getOrderHistory(){
+            if (localStorage.getItem('userid') != 'undefined') {
+                $.ajax({
+                    url: 'http://localhost:4000/api/users/getAllOrders?userId=' + localStorage.getItem('userid'),
+                    dataType: 'json',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (e) {
+                        if (e.code == 200) {  
+                            var cart='';
+                            string='';
+                            $(e.data).each(function(){
+                                createdAt= new Date(this.createdAt);
+                                createdAtString= (createdAt.getMonth()+1)+'/'+createdAt.getDate()+'/'+createdAt.getFullYear();
+                                $(this.cartInfo).each(function(){ 
+                                    getProductDetail(this.productId,this.quantity,createdAtString);
+                                });
+                            });
+                        }
+                        else {
+                            window.location.href="index.html";
+                        }
+                    }
+                });
+            }
+            else {
+                window.location.href="index.html";
+            }
+        }
+        
+        function getProductDetail(prodId,quantity,createdAtString){
+            $.ajax({
+                url: 'http://localhost:4000/api/users/getProductDetail?id=' + prodId,
+                dataType: 'json',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (e) {
+                    if (e.code == 200) {
+                        $('#productImg').attr('src', e.obj.data.image);
+                        $('#productPrice').html('$' + e.obj.data.pricing);
+                        $('#productDescription').html(e.obj.data.description);
+                        $('#aAddToCart').attr('onclick',"AddToCart('"+ e.obj.data._id +"')");
+                        $('#aBuyNow').attr('onclick',"BuyNow()");
+                        var prod=e.obj.data;
+                        string ='<tr>\
+                                    <td colspan="2"><img style="width:50px" src="'+prod.image+'">\
+                                        '+ prod.description +
+                                    '</td>\
+                                    <td>\
+                                    '+quantity+'\
+                                    </td>\
+                                    <td>$'+prod.pricing+'</td>\
+                                    <td>'+createdAtString+'</td>\
+                                    <td>$'+ (prod.pricing*quantity) +'</br> + Shipping Cost : '+ prod.shippingCost +' </td>\
+                                </tr> '; 
+                        $('#tbodyCart').append(string);                       
+                    }
+                }
+            });
+        }
+
+        function getCartCount() {
+            $.ajax({
+                url: 'http://localhost:4000/api/users/getCartData?userId=' + localStorage.getItem('userid'),
+                dataType: 'json',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (e) {
+                    if (e.code == 200) {
+                        $('#sCartCount').html(e.data.length+' items in cart');
+                    }
+                    else {
+                        $('#loginDiv').show();
+                        $('#cartoverview').hide();
+                    }
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
