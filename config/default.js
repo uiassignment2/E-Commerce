@@ -11,5 +11,5 @@ module.exports = {
     logger: false,
     debug: false // include SMTP traffic in the logs
   },
-  mongoUrl:'mongodb://localhost/Factis'
+  mongoUrl:'mongodb://localhost/testingEcommerce'
 }

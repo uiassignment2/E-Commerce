@@ -58,7 +58,7 @@ class ExpressServer {
     app.get('/', function(req, res) {
         console.log('client requests root');
         //use sendfile to send our index.html file
-        res.sendFile(path.join(__dirname, 'client/view', 'index.html'));
+        res.sendFile(path.join(__dirname, 'client/view', 'registration.html'));
     });
 
 

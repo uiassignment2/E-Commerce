@@ -92,11 +92,13 @@
                         success: function (e) {
                             if (e.code == 200) {
                                 $('#loginDiv').hide();
+                                $('#productDiv').show();
                                 $('#cartoverview').show();
                                 getCartCount();
                             }
                             else {
                                 $('#loginDiv').show();
+                                $('#productDiv').hide();
                                 $('#cartoverview').hide();
                             }
                         }
@@ -104,6 +106,7 @@
                 }
                 else {
                     $('#loginDiv').show();
+                    $('#productDiv').hide();
                     $('#cartoverview').hide();
                 }
             }
